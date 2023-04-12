@@ -1,0 +1,36 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// Prisma @pothos/plugin-prisma generator that generates the types Pothos requires
+generator pothos {
+  provider = "prisma-pothos-types"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          String   @id @default(uuid())
+  first_name  String
+  last_name   String
+  is_verified Boolean  @default(false)
+  middle_name String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  // Banks       Bank[]
+}
+
+model Bank {
+  id             String   @id @default(uuid())
+  bank_name      String
+  account_number String
+  updatedAt      DateTime @updatedAt
+  // userId         String
+  // user           User     @relation(fields: [userId], references: [id])
+}
