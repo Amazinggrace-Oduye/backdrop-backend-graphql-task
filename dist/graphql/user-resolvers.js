@@ -101,7 +101,7 @@ builder.mutationField("verifyUser", (t) => t.prismaField({
         });
     },
 }));
-builder.queryField("verifyUserName", (t) => t.prismaField({
+builder.queryField("getAccountName", (t) => t.prismaField({
     type: "User",
     nullable: true,
     args: {
@@ -114,8 +114,10 @@ builder.queryField("verifyUserName", (t) => t.prismaField({
         const user = await prisma.user.findFirst({
             where: { id: args.id },
         });
-        if (!user?.id)
+        if (!user?.first_name)
             throw new Error("user not found");
+        const { first_name, last_name, middle_name } = user;
+        const name = `${first_name} ${last_name} ${middle_name}`;
         if (user.is_verified)
             user;
         const response = (await RemotePaystackSevice.verifyAccountNumber({
@@ -125,8 +127,6 @@ builder.queryField("verifyUserName", (t) => t.prismaField({
         if (!response?.data.account_name) {
             throw new Error("user account detail not found");
         }
-        const { first_name, last_name, middle_name } = user;
-        const name = `${first_name} ${last_name} ${middle_name}`;
         const dist = UtilService.getLlevenshteinDistance(name, response.data.account_name);
         if (dist > 2) {
             throw new Error(`user not verified name verification failed`);
