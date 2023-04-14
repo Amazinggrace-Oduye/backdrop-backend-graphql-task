@@ -1,7 +1,7 @@
 // Resolvers define how to fetch the types defined in your schema.
 import { ApolloServer } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
-import { schema } from "./graphql/schema";
+import { schema } from "./user/schema";
 // import { resolvers } from "./graphql/resolvers";
 
 // The ApolloServer constructor requires two parameters: your schema
