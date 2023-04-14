@@ -3,12 +3,7 @@ import { IPaystack } from "../types/paystack";
 import { prisma } from "../config/db";
 import { builder } from "./builder";
 import { UtilService } from "../helpers/util-services";
-// Resolvers define how to fetch the types defined in your schema.
-// export const resolvers = {
-//   Query: {
-//     users: async (_parent: {}, _args: {}, _ctx: {}) => prisma.user.findMany(),
-//   },
-// };
+
 builder.prismaObject("User", {
   fields: (t) => ({
     id: t.exposeID("id"),
@@ -34,23 +29,6 @@ builder.queryField("users", (t) =>
     resolve: async (query, _root, _args, _ctx, _info) => {
       return prisma.user.findMany({ ...query });
     },
-  })
-);
-
-builder.queryField("user", (t) =>
-  t.prismaField({
-    type: "User",
-    nullable: true,
-    args: {
-      id: t.arg.string({ required: true }),
-    },
-    resolve: (query, _parent, args, _info) =>
-      prisma.user.findFirst({
-        ...query,
-        where: {
-          id: args.id,
-        },
-      }),
   })
 );
 
@@ -83,27 +61,26 @@ builder.mutationField("updateUser", (t) =>
   })
 );
 
-builder.mutationField("verifyUser", (t) =>
+builder.mutationField("verifyUserName", (t) =>
   t.prismaField({
     type: "User",
     nullable: true,
     args: {
       id: t.arg.string({ required: true }),
       account_number: t.arg.string({ required: true }),
-      bank_name: t.arg.string({ required: true }),
+      account_name: t.arg.string({ required: true }),
       bank_code: t.arg.string({ required: true }),
     },
     resolve: async (query, _parent, args, _ctx) => {
       const response = (await RemotePaystackSevice.verifyAccountNumber({
         account_number: args.account_number,
         bank_code: args.bank_code,
-        bank_name: args.bank_name,
       })) as IPaystack;
       if (!response?.data.account_name) {
         throw new Error("user account detail not found");
       }
       const dist = UtilService.getLlevenshteinDistance(
-        args.bank_name,
+        args.account_name,
         response.data.account_name
       );
       if (dist > 2) {
@@ -144,7 +121,8 @@ builder.queryField("getAccountName", (t) =>
       });
       if (!user?.first_name) throw new Error("user not found");
       const { first_name, last_name, middle_name } = user;
-      const name = `${first_name} ${last_name} ${middle_name}`;
+      /** TODO Match Name in any other  */
+      const name = `${first_name} ${middle_name} ${last_name} `;
       // if user is not verified call paystack
       if (user.is_verified) user;
 
@@ -157,8 +135,6 @@ builder.queryField("getAccountName", (t) =>
         throw new Error("user account detail not found");
       }
 
-      // const { first_name, last_name, middle_name } = user;
-      // const name = `${first_name} ${last_name} ${middle_name}`;
       const dist = UtilService.getLlevenshteinDistance(
         name,
         response.data.account_name
