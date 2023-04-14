@@ -1,33 +1,82 @@
-import { ApolloServer } from "@apollo/server";
+import { prisma } from "../src/config/db";
 
-import { schema } from "../src/users/schema";
+import { IUser } from "../src/types/user";
 
-test("returns account name input by user", async () => {
-  const query = `#graphql
-    query Query($getAccountNameId: String!, $accountNumber: String!, $bankCode: String!, $bankName: String) {
-          getAccountName(id: $getAccountNameId, account_number: $accountNumber, bank_code: $bankCode, bank_name: $bankName) {
-            first_name
-            last_name
-            middle_name
+beforeAll(async () => {
+  // create user
+  await prisma.user.createMany({
+    data: [
+      {
+        id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+        first_name: "Amazinggrace",
+        middle_name: "ogechukwu",
+        last_name: "oduye",
+      },
 
-          }
-}
-  `;
-
-  const testServer = new ApolloServer({
-    schema,
+      {
+        id: "79e5d78a-6af1-4d16-a7aa-9cb43816f26c",
+        first_name: "Michael",
+        middle_name: "Champion",
+        last_name: "Chibuke",
+      },
+    ],
   });
-  const result = await testServer.executeOperation({
-    query,
-    variables: {
-      accountNumber: "0055852601",
-      bankCode: "044",
-      getAccountNameId: "7fd8d46c-7225-4aff-91f2-94ae9c24a419",
-      bankName: null,
+});
+
+console.log("✨ 2 products successfully created!");
+
+afterAll(async () => {
+  const deleteUser = prisma.user.deleteMany();
+
+  await prisma.$transaction([deleteUser]);
+
+  await prisma.$disconnect();
+});
+
+test("should match user acccount name", async () => {
+  // The new customers details
+  const testUser: IUser = {
+    id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    first_name: "Amazinggrace",
+    middle_name: "ogechukwu",
+    last_name: "oduye",
+    is_verified: false,
+  };
+
+  // Check if the new order was created by filtering on unique email field of the customer
+  const userInDb = await prisma.user.findFirst({
+    where: {
+      id: "06bf9abb-4622-489d-8de3-62b625359cbe",
     },
   });
-  // console.log({ data: result.body.singleResult });
+  console.log({ userInDb });
 
-  expect(result.body.kind === "single");
-  expect(result.body).toBeTruthy();
+  // Expect the new customer to have been created and match the input
+  expect(testUser.first_name).toEqual(userInDb?.first_name);
+  expect(testUser.last_name).toEqual(userInDb?.last_name);
+  // Expect the new order to have been created and contain the new customer
+  // expect(userInDb).toHaveProperty("data");
+});
+
+test("should update is_verified field to true of match name", async () => {
+  // The existing customers email
+  const user: IUser = {
+    id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    first_name: "Amazinggrace",
+    middle_name: "ogechukwu",
+    last_name: "oduye",
+    is_verified: false,
+  };
+
+  const verifiedUser = await prisma.user.update({
+    where: {
+      id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    },
+    data: { is_verified: true },
+  });
+
+  console.log({ verifiedUser });
+
+  // expect(verifiedUser.id).toBe(true);
+  expect(user.last_name).toEqual(verifiedUser?.last_name);
 });

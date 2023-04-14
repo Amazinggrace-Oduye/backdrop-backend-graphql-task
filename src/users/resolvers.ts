@@ -20,48 +20,7 @@ builder.prismaObject("User", {
   }),
 });
 
-builder.queryField("users", (t) =>
-  // 2
-  t.prismaField({
-    // 3
-    type: ["User"],
-    // 4
-    resolve: async (query, _root, _args, _ctx, _info) => {
-      return prisma.user.findMany({ ...query });
-    },
-  })
-);
-
-builder.mutationField("updateUser", (t) =>
-  t.prismaField({
-    type: "User",
-    nullable: true,
-    args: {
-      id: t.arg.string({ required: true }),
-      name: t.arg.string(),
-      is_verified: t.arg.boolean(),
-    },
-    resolve: async (query, _parent, args, _ctx) => {
-      const findQueryId = prisma.user.findFirst({
-        where: { id: args.id },
-      });
-      if (!findQueryId) throw new Error("user not found");
-
-      return prisma.user.update({
-        ...query,
-        where: {
-          id: args.id,
-        },
-        data: {
-          ...findQueryId,
-          is_verified: args.is_verified || undefined,
-        },
-      });
-    },
-  })
-);
-
-builder.mutationField("verifyUserName", (t) =>
+export const verifyUser = builder.mutationField("verifyUserName", (t) =>
   t.prismaField({
     type: "User",
     nullable: true,
@@ -105,7 +64,7 @@ builder.mutationField("verifyUserName", (t) =>
   })
 );
 
-builder.queryField("getAccountName", (t) =>
+export const getAccount = builder.queryField("getAccountName", (t) =>
   t.prismaField({
     type: "User",
     nullable: true,
@@ -119,11 +78,12 @@ builder.queryField("getAccountName", (t) =>
       const user = await prisma.user.findFirst({
         where: { id: args.id },
       });
-      if (!user?.first_name) throw new Error("user not found");
+      if (!user?.id) throw new Error("user not found");
       const { first_name, last_name, middle_name } = user;
       /** TODO Match Name in any other  */
       const name = `${first_name} ${middle_name} ${last_name} `;
       // if user is not verified call paystack
+      console.log({ user });
       if (user.is_verified) user;
 
       const response = (await RemotePaystackSevice.verifyAccountNumber({
@@ -143,6 +103,47 @@ builder.queryField("getAccountName", (t) =>
         throw new Error(`user not verified name verification failed`);
       }
       return user;
+    },
+  })
+);
+
+builder.queryField("users", (t) =>
+  // 2
+  t.prismaField({
+    // 3
+    type: ["User"],
+    // 4
+    resolve: async (query, _root, _args, _ctx, _info) => {
+      return prisma.user.findMany({ ...query });
+    },
+  })
+);
+
+builder.mutationField("updateUser", (t) =>
+  t.prismaField({
+    type: "User",
+    nullable: true,
+    args: {
+      id: t.arg.string({ required: true }),
+      name: t.arg.string(),
+      is_verified: t.arg.boolean(),
+    },
+    resolve: async (query, _parent, args, _ctx) => {
+      const findQueryId = prisma.user.findFirst({
+        where: { id: args.id },
+      });
+      if (!findQueryId) throw new Error("user not found");
+
+      return prisma.user.update({
+        ...query,
+        where: {
+          id: args.id,
+        },
+        data: {
+          ...findQueryId,
+          is_verified: args.is_verified || undefined,
+        },
+      });
     },
   })
 );
