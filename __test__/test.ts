@@ -84,6 +84,4 @@ test("should update is_verified field to true of names match", async () => {
   // expect(verifiedUser.id).toBe(true);
   expect(testUserName).toMatch(userInDbName);
   expect(levenshteinDistance).toBe(0);
-},setTimeout(() => {
-  
-}, 300000););
+});
