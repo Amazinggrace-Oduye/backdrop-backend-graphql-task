@@ -36,9 +36,3 @@ export const envConfig = {
   PAYSTACK_BASE_URL: getEnvString("PAYSTACK_BASE_URL"),
   PAYSTACK_SECRET_KEY: getEnvString("PAYSTACK_SECRET_KEY"),
 };
-
-// export class Env {
-//   static all() {
-//     return envConfig;
-//   }
-// }
