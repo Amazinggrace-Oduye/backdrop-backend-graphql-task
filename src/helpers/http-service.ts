@@ -1,4 +1,4 @@
-import axios, { AxiosRequestConfig } from "axios";
+00import axios, { AxiosRequestConfig } from "axios";
 import { MyHeaders } from "./header-helper";
 
 class HttpServiceBase {
@@ -116,25 +116,6 @@ class HttpServiceBase {
           reject(err);
         });
     });
-  }
-
-  getAxiosError<T = any>(err: any) {
-    if (err?.response) {
-      const { data, status, statusText, headers } = err.response;
-      if (data && status) {
-        return {
-          data: data as T,
-          status,
-          statusText,
-          headers,
-        };
-      }
-    } else if (err?.request) {
-      console.log({ requestErr: err?.request });
-    } else {
-      console.log("Error", err?.message);
-    }
-    return null;
   }
 }
 
