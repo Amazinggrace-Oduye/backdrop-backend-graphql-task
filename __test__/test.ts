@@ -27,7 +27,7 @@ beforeAll(async () => {
   });
 });
 
-console.log("✨ 2 products successfully created!");
+console.log("✨ 2 Users successfully created!");
 
 afterAll(async () => {
   const deleteUser = prisma.user.deleteMany({
@@ -44,6 +44,7 @@ afterAll(async () => {
   await prisma.$transaction([deleteUser]);
 
   await prisma.$disconnect();
+  console.log("✨ 2 Users successfully deleted!");
 });
 
 test("should match user acccount name", async () => {
