@@ -11,13 +11,15 @@ beforeAll(async () => {
         first_name: "Amazinggrace",
         middle_name: "ogechukwu",
         last_name: "oduye",
+        is_verified: false,
       },
 
       {
         id: "79e5d78a-6af1-4d16-a7aa-9cb43816f26c",
-        first_name: "Michael",
-        middle_name: "Champion",
-        last_name: "Chibuke",
+        first_name: "Amazinggrace",
+        middle_name: "ogechukwu",
+        last_name: "oduye",
+        is_verified: false,
       },
     ],
   });
