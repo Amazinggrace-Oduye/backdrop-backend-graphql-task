@@ -1,4 +1,4 @@
-00import axios, { AxiosRequestConfig } from "axios";
+import axios, { AxiosRequestConfig } from "axios";
 import { MyHeaders } from "./header-helper";
 
 class HttpServiceBase {
