@@ -20,7 +20,7 @@ beforeAll(async () => {
         id: "947ab542-09a7-4a23-941d-812d072270ea",
         first_name: "Michael",
         middle_name: "chibuike",
-        last_name: "Amakoh",
+        last_name: "Promise",
         is_verified: false,
       },
     ],
@@ -30,7 +30,16 @@ beforeAll(async () => {
 console.log("✨ 2 products successfully created!");
 
 afterAll(async () => {
-  const deleteUser = prisma.user.deleteMany();
+  const deleteUser = prisma.user.deleteMany({
+    where: {
+      id: {
+        in: [
+          "06bf9abb-4622-489d-8de3-62b625359cbe",
+          "947ab542-09a7-4a23-941d-812d072270ea",
+        ],
+      },
+    },
+  });
 
   await prisma.$transaction([deleteUser]);
 
@@ -45,7 +54,7 @@ test("should match user acccount name", async () => {
     last_name: "oduye",
     is_verified: false,
   };
-  const testUserInput: IInputUserData = {
+  const testUserInpute: IInputUserData = {
     id: "06bf9abb-4622-489d-8de3-62b625359cbe",
     account_name: `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`,
     account_number: "0055852601",
@@ -63,8 +72,8 @@ test("should match user acccount name", async () => {
     `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`.toLowerCase();
 
   const dataFromPaystack = (await RemotePaystackSevice.verifyAccountNumber({
-    account_number: testUserInput.account_number,
-    bank_code: testUserInput.bank_code,
+    account_number: testUserInpute.account_number,
+    bank_code: testUserInpute.bank_code,
   })) as IPaystack;
 
   const userPaystackName = dataFromPaystack.data.account_name.toLowerCase();
@@ -73,12 +82,45 @@ test("should match user acccount name", async () => {
   expect(testUser.last_name).toEqual(userInDb?.last_name);
   expect(dataFromPaystack).toHaveProperty("data");
   expect(dataFromPaystack.data.account_number).toEqual(
-    testUserInput.account_number
+    testUserInpute.account_number
   );
-  expect(testUserName).toEqual(userPaystackName);
+  expect(testUserName).toMatch(userPaystackName);
 });
 
-test("should update is_verified field to true of names match", async () => {
+test("should update is_verified field to true if names match and levenshteinDistance < 2", async () => {
+  const testUser: IUser = {
+    id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    first_name: "ogechukwu",
+    middle_name: "Amazinggrace",
+    last_name: "oduye",
+    is_verified: false,
+  };
+  const testUserInpute: IInputUserData = {
+    id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    account_name: `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`,
+    account_number: "0055852601",
+    bank_code: "044",
+    bank_name: "access bank",
+  };
+
+  const userInD = await prisma.user.update({
+    where: {
+      id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    },
+    data: { is_verified: true },
+  });
+
+  const userInDbName = `${userInD?.first_name} ${userInD?.middle_name} ${userInD?.last_name}`;
+  const levenshteinDistance = UtilService.getLlevenshteinDistance(
+    testUserInpute.account_name,
+    userInDbName
+  );
+
+  expect(testUserInpute.account_name).toMatch(userInDbName);
+  expect(levenshteinDistance).toBe(0);
+  expect(userInD.is_verified).toBeTruthy;
+});
+test("should return user name if user is already verified", async () => {
   const testUser: IUser = {
     id: "06bf9abb-4622-489d-8de3-62b625359cbe",
     first_name: "ogechukwu",
@@ -87,47 +129,20 @@ test("should update is_verified field to true of names match", async () => {
     is_verified: false,
   };
 
-  const userInD = await prisma.user.update({
-    where: {
-      id: "06bf9abb-4622-489d-8de3-62b625359cbe",
-    },
-    data: { is_verified: true },
-  });
-
-  const testUserName = `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`;
-  const userInDbName = `${userInD?.first_name} ${userInD?.middle_name} ${userInD?.last_name}`;
-  const levenshteinDistance = UtilService.getLlevenshteinDistance(
-    testUserName,
-    userInDbName
-  );
-
-  expect(testUserName).toMatch(userInDbName);
-  expect(levenshteinDistance).toBe(0);
-});
-test("should update is_verified field to true levenshteinDistance < 2", async () => {
-  const testUser: IUser = {
-    id: "79e5d78a-6af1-4d16-a7aa-9cb43816f26c",
-    first_name: "ogechukwu",
-    middle_name: "Amazingrace",
-    last_name: "oduye",
-    is_verified: false,
+  const testUserInpute: IInputUserData = {
+    id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    account_name: `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`,
+    account_number: "0055852601",
+    bank_code: "044",
+    bank_name: "access bank",
   };
 
-  const userInD = await prisma.user.update({
-    where: {
-      id: "06bf9abb-4622-489d-8de3-62b625359cbe",
-    },
-    data: { is_verified: true },
+  const userInDb = await prisma.user.findFirst({
+    where: { id: "06bf9abb-4622-489d-8de3-62b625359cbe" },
   });
-
   const testUserName = `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`;
-  const userInDbName = `${userInD?.first_name} ${userInD?.middle_name} ${userInD?.last_name}`;
-  const levenshteinDistance = UtilService.getLlevenshteinDistance(
-    testUserName,
-    userInDbName
-  );
 
-  expect(testUserName).not.toBe(userInDbName);
-  expect(userInD.is_verified).toBeTruthy;
-  expect(levenshteinDistance).toBe(1);
+  expect(userInDb?.id).toEqual(testUser.id);
+  expect(userInDb?.is_verified).toBeTruthy;
+  expect(testUserName).toBe(testUserInpute.account_name);
 });

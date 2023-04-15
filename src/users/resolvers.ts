@@ -80,10 +80,10 @@ builder.queryField("getAccountName", (t) =>
       });
       if (!user?.id) throw new Error("user not found");
       const { first_name, last_name, middle_name } = user;
-      /** TODO Match Name in any other  */
+
       const name = `${first_name} ${middle_name} ${last_name} `;
-      // if user is not verified call paystack
-      console.log({ user });
+      /** if user is not verified call paystack  */
+
       if (user.is_verified) user;
 
       const response = (await RemotePaystackSevice.verifyAccountNumber({
