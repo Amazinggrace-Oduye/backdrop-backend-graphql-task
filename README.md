@@ -6,7 +6,7 @@ The pure Levenshtein Distance algorithm is a more effective solution than the br
 
 # Assumptions
 
-- Users enter their names with a single space in this order firstname middlename lastname.
-- User enter middle name if registered with their bank 
+- Users enter their names with a single space in this order firstname lastname.
+- User enter middle name if registered with their bank in the order firstname middlename lastname
 - User in DB is identified by ID.
 - .env was added for access to hosted database and ease of testing.
