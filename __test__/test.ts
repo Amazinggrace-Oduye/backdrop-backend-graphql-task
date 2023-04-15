@@ -15,10 +15,10 @@ beforeAll(async () => {
       },
 
       {
-        id: "79e5d78a-6af1-4d16-a7aa-9cb43816f26c",
-        first_name: "Amazinggrace",
-        middle_name: "ogechukwu",
-        last_name: "oduye",
+        id: "947ab542-09a7-4a23-941d-812d072270ea",
+        first_name: "Michael",
+        middle_name: "chibuike",
+        last_name: "Amakoh",
         is_verified: false,
       },
     ],
@@ -86,4 +86,33 @@ test("should update is_verified field to true of names match", async () => {
   // expect(verifiedUser.id).toBe(true);
   expect(testUserName).toMatch(userInDbName);
   expect(levenshteinDistance).toBe(0);
+});
+test("should update is_verified field to true levenshteinDistance < 2", async () => {
+  // The existing customers email
+  const testUser: IUser = {
+    id: "79e5d78a-6af1-4d16-a7aa-9cb43816f26c",
+    first_name: "Amazingrace",
+    middle_name: "ogechukwu",
+    last_name: "oduye",
+    is_verified: false,
+  };
+
+  const userInD = await prisma.user.update({
+    where: {
+      id: "06bf9abb-4622-489d-8de3-62b625359cbe",
+    },
+    data: { is_verified: true },
+  });
+
+  const testUserName = `${testUser.first_name} ${testUser.middle_name} ${testUser.last_name}`;
+  const userInDbName = `${userInD?.first_name} ${userInD?.middle_name} ${userInD?.last_name}`;
+  const levenshteinDistance = UtilService.getLlevenshteinDistance(
+    testUserName,
+    userInDbName
+  );
+
+  console.log({ levenshteinDistance });
+  expect(testUserName).not.toBe(userInDbName);
+  expect(userInD.is_verified).toBeTruthy;
+  expect(levenshteinDistance).toBe(1);
 });
