@@ -55,7 +55,7 @@ test("should match user acccount name", async () => {
   expect(testUser.last_name).toEqual(userInDb?.last_name);
   // Expect the new order to have been created and contain the new customer
   // expect(userInDb).toHaveProperty("data");
-}),;
+});
 
 test("should update is_verified field to true of names match", async () => {
   // The existing customers email
