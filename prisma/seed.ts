@@ -10,8 +10,8 @@ async function main() {
     data: [
       {
         id: "7fd8d46c-7225-4aff-91f2-94ae9c24a419",
-        first_name: "Amazing",
-        middle_name: "oge",
+        first_name: "ogechukwu",
+        middle_name: "Amazinggrace",
         last_name: "oduye",
         is_verified: false,
       },

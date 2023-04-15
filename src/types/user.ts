@@ -7,3 +7,11 @@ export interface IUser {
   createdAt?: Date | string;
   updatedAt?: Date | string;
 }
+
+export interface IInputUserData {
+  id: string;
+  account_number: string;
+  account_name: string;
+  bank_code: string;
+  bank_name: string;
+}

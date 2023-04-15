@@ -1,3 +1,4 @@
+import { IPaystack } from "src/types/paystack";
 import { HttpService } from ".././helpers/http-service";
 import { envConfig } from "../config/env";
 
@@ -18,7 +19,11 @@ class PaystackRemoteBase {
     };
   }
 
-  async getBanks(country: string) {
+  async getBanks({
+    country = "Nigeria",
+  }: {
+    country: string;
+  }): Promise<IPaystack | null | undefined> {
     const { base_url, paystack_secrete_key } = this.getVariables();
     return HttpService.get({
       url: `${base_url}/bank`,
@@ -35,7 +40,7 @@ class PaystackRemoteBase {
     account_number: string;
     bank_code: string;
     bank_name?: string;
-  }) {
+  }): Promise<IPaystack | null | undefined> {
     const { base_url, paystack_secrete_key } = this.getVariables();
     return HttpService.get({
       url: `${base_url}/bank/resolve`,

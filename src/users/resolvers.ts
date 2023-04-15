@@ -20,7 +20,7 @@ builder.prismaObject("User", {
   }),
 });
 
-export const verifyUser = builder.mutationField("verifyUserName", (t) =>
+builder.mutationField("verifyUserName", (t) =>
   t.prismaField({
     type: "User",
     nullable: true,
@@ -64,7 +64,7 @@ export const verifyUser = builder.mutationField("verifyUserName", (t) =>
   })
 );
 
-export const getAccount = builder.queryField("getAccountName", (t) =>
+builder.queryField("getAccountName", (t) =>
   t.prismaField({
     type: "User",
     nullable: true,
