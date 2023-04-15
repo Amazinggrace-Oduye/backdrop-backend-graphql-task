@@ -141,29 +141,7 @@ temp/
 temps/
 deploy/
 license/
-*.env
-*.yarn
-!*.example.env
-!*.env.example
-*.gz
-*.DS_Store
-*.sqlite
-*.sqlite3
-tool/
-tempDir/
-.webpack/
-.serverless/
-aws-config.json
-yarn-error.log
 
-#
-# src/config/endpoints-config.json
-#
-# .vscode
-# !.vscode/settings.json
-# !.vscode/launch.json
-# !.vscode/extensions.json
-src/protocols/oner/
-#
-src/rest-request
-__temp.*
+
+
+yarn-error.log
