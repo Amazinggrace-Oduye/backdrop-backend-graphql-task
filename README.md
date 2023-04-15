@@ -2,5 +2,5 @@
 
 
 # Assumptions 
-- Users enter their names in the other firstname middlename lastname 
+- Users enter their names in this order firstname middlename lastname 
 - User in DB is identified by ID 
