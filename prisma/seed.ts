@@ -26,7 +26,6 @@ async function main() {
       {
         id: "98b25a4e-2a24-42d3-b5f6-e26b1b4c21dd",
         first_name: "solomon",
-        middle_name: "Nedu",
         last_name: "Igori",
         is_verified: false,
       },
