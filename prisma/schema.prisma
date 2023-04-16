@@ -17,7 +17,7 @@ model User {
   first_name  String
   last_name   String
   is_verified Boolean  @default(false)
-  middle_name String?
+  middle_name String
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   // Banks       Bank[]
