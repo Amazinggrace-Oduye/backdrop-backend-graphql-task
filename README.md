@@ -55,5 +55,4 @@ npx prisma db seed
 `NOTE`
 ```
 To spin up the graphql server you are to compile first.
-
 ```
