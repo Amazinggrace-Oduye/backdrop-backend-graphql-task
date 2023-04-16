@@ -54,6 +54,6 @@ npx prisma db seed
 
 `NOTE`
 ```
-The database is already seeded for test
+To spin up the graphql server you are to compile first.
 
 ```
