@@ -54,5 +54,6 @@ npx prisma db seed
 
 `NOTE`
 ```
-The database is already seeded
+The database is already seeded for test
+
 ```
