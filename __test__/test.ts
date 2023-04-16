@@ -13,7 +13,6 @@ beforeAll(async () => {
         first_name: "ogechukwu",
         middle_name: "Amazinggrace",
         last_name: "oduye",
-        is_verified: false,
       },
 
       {
@@ -21,7 +20,6 @@ beforeAll(async () => {
         first_name: "Michael",
         middle_name: "chibuike",
         last_name: "Promise",
-        is_verified: false,
       },
     ],
   });
@@ -78,7 +76,7 @@ test("should match user acccount name", async () => {
   })) as IPaystack;
 
   const userPaystackName = dataFromPaystack.data.account_name.toLowerCase();
-  // Expect the new customer to have been created and match the input
+
   expect(testUser.first_name).toEqual(userInDb?.first_name);
   expect(testUser.last_name).toEqual(userInDb?.last_name);
   expect(dataFromPaystack).toHaveProperty("data");
